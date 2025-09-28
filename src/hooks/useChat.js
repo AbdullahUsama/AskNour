@@ -160,7 +160,7 @@ export function useChat() {
     }
     
     return await chatContext.sendFileMessage(file, fileType);
-  }, [chatContext]);
+  }, [chatContext, getFileType]);
   
   /**
    * Get file type from file object

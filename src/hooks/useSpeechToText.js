@@ -146,7 +146,7 @@ export function useSpeechToText() {
       setError(errorMessage);
       return { success: false, error: errorMessage };
     }
-  }, [isRecording, isProcessing, initializeRecording]);
+  }, [isRecording, isProcessing, initializeRecording, monitorAudioLevel, processRecording]);
   
   /**
    * Stop recording audio

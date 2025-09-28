@@ -1,0 +1,45 @@
+# Development files
+.next
+node_modules/.cache
+.turbo
+
+# Documentation and README files
+*.md
+CONVERSION_README.md
+README.md
+
+# Old application files (if not needed for deployment)
+oldapp/
+
+# Temporary files
+tmp/
+
+# Development dependencies source maps
+**/*.map
+
+# Large binary files that aren't needed
+node_modules/**/*.node
+node_modules/**/build/
+node_modules/**/src/
+node_modules/**/docs/
+node_modules/**/test/
+node_modules/**/tests/
+node_modules/**/__tests__/
+node_modules/**/*.test.js
+node_modules/**/*.spec.js
+
+# Specific large packages documentation
+node_modules/@langchain/**/docs/
+node_modules/langchain/docs/
+node_modules/mongodb/docs/
+
+# ESLint cache
+.eslintcache
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db

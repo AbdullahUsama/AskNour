@@ -249,7 +249,7 @@ export default function ChatInterface() {
       )}
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto chat-messages">
+      <div className="flex-1 overflow-y-auto chat-messages pb-24">
         <div className="max-w-4xl mx-auto px-4 py-6">
           {messages.map((message) => (
             <MessageBubble
@@ -282,33 +282,48 @@ export default function ChatInterface() {
       </div>
 
       {/* Input Area */}
-      <div className="px-4 py-3 flex-shrink-0">
+      <div className="fixed bottom-12 left-0 right-0 px-4 py-3 bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-purple-50/80 backdrop-blur-md z-50">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-gray-200/50 shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-2 border border-gray-200/50 shadow-lg">
             <div className="flex items-center space-x-2">
-              {/* File Upload */}
-              <div className="flex-shrink-0">
-                <FileUpload onFileUpload={handleFileUpload} />
-              </div>
-
               {/* Audio Recorder */}
               <div className="flex-shrink-0">
-                <AudioRecorder 
-                  onTranscription={handleAudioTranscription}
-                  isRecording={isRecording}
-                  setIsRecording={setIsRecording}
-                />
+                <div className="bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
+                  <AudioRecorder 
+                    onTranscription={handleAudioTranscription}
+                    isRecording={isRecording}
+                    setIsRecording={setIsRecording}
+                  />
+                </div>
               </div>
 
-              {/* Text Input */}
-              <div className="flex-1">
+              {/* Text Input with File Upload inside */}
+              <div className="flex-1 relative">
+                {/* File Upload Button - Inside Input */}
+                <button
+                  onClick={() => document.getElementById('file-upload').click()}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-gray-100 hover:bg-gray-200 rounded-full p-1 text-gray-500 hover:text-gray-700 transition-colors z-10"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                </button>
+                <input
+                  id="file-upload"
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) handleFileUpload(file, file.type);
+                  }}
+                />
                 <textarea
                   ref={inputRef}
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder={isRecording ? "Recording..." : "Type your message here... (English/Arabic supported)"}
-                  className="w-full px-4 py-3 bg-white/90 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all shadow-sm backdrop-blur-sm text-gray-900 placeholder-gray-500 outline-none"
+                  placeholder={isRecording ? "Recording..." : "Type your message here..."}
+                  className="w-full pl-12 pr-4 py-3 bg-transparent rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all text-gray-900 placeholder-gray-500 outline-none"
                   rows={1}
                   disabled={isLoading || isRecording}
                   style={{
@@ -328,7 +343,7 @@ export default function ChatInterface() {
                 <button
                   onClick={() => sendMessage()}
                   disabled={!inputMessage.trim() || isLoading || isRecording}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white p-3 rounded-xl transition-all shadow-sm hover:shadow-md disabled:hover:shadow-sm"
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white p-3 rounded-full transition-all shadow-sm hover:shadow-md disabled:hover:shadow-sm"
                 >
                   <svg 
                     className="w-5 h-5" 

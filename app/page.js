@@ -2,8 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import ChatInterface from './../src/components/ChatInterface';
-import { useAuth, useChat } from './../src/hooks';
+import dynamic from 'next/dynamic';
+
+// Dynamically import components to avoid SSR issues
+const ChatInterface = dynamic(() => import('./../src/components/ChatInterface'), {
+  ssr: false
+});
+
+const ClientWrapper = dynamic(() => import('./../src/components/ClientWrapper'), {
+  ssr: false
+});
 
 /**
  * Main chat page component
@@ -12,17 +20,43 @@ import { useAuth, useChat } from './../src/hooks';
 export default function HomePage() {
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
-  
-  // Use our custom hooks
-  const { user, isAuthenticated, logout } = useAuth();
-  const { connectionStatus, getMessageStats } = useChat();
-  
-  const messageStats = getMessageStats();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  if (!isClient) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-16 h-16 bg-blue-200 rounded-full mb-4"></div>
+          <div className="h-4 bg-blue-200 rounded w-32 mb-2"></div>
+          <div className="h-3 bg-blue-100 rounded w-24"></div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ClientWrapper>
+      {({ user, isAuthenticated, logout, connectionStatus, messageStats }) => (
+        <MainPageContent 
+          user={user}
+          isAuthenticated={isAuthenticated}
+          logout={logout}
+          connectionStatus={connectionStatus}
+          messageStats={messageStats}
+          router={router}
+        />
+      )}
+    </ClientWrapper>
+  );
+}
+
+/**
+ * Main page content component
+ */
+function MainPageContent({ user, isAuthenticated, logout, connectionStatus, messageStats, router }) {
   const handleLogout = async () => {
     const result = await logout();
     if (result.success) {
@@ -38,20 +72,8 @@ export default function HomePage() {
     router.push('/auth/register');
   };
 
-  if (!isClient) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 bg-blue-200 rounded-full mb-4"></div>
-          <div className="h-4 bg-blue-200 rounded w-32 mb-2"></div>
-          <div className="h-3 bg-blue-100 rounded w-24"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative">
+    <main className="min-h-screen bg-blue-50 relative">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200/50 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -80,11 +102,11 @@ export default function HomePage() {
                   connectionStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' :
                   'bg-red-400'
                 }`}></div>
-                <span className="capitalize">{connectionStatus}</span>
+                <span className="capitalize">{connectionStatus || 'disconnected'}</span>
               </div>
 
               {/* Message Count (if chat is active) */}
-              {messageStats.total > 0 && (
+              {isClient && messageStats && messageStats.total > 0 && (
                 <div className="hidden md:flex items-center text-sm text-gray-600">
                   <span className="mr-1">💬</span>
                   <span>{messageStats.total} messages</span>
@@ -133,7 +155,7 @@ export default function HomePage() {
       </header>
 
       {/* Welcome Message for New Users */}
-      {!isAuthenticated && messageStats.total === 0 && (
+      {isClient && !isAuthenticated && messageStats && messageStats.total === 0 && (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-20">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-white/20 p-6 mb-6">
             <div className="flex items-start space-x-4">
@@ -147,7 +169,7 @@ export default function HomePage() {
                   Welcome to Future University Egypt!
                 </h2>
                 <p className="text-gray-600 mb-4">
-                  I'm your AI admission assistant. I can help you with:
+                  I&apos;m your AI admission assistant. I can help you with:
                 </p>
                 <ul className="text-sm text-gray-600 space-y-1 mb-4">
                   <li>• University programs and requirements</li>
