@@ -1,0 +1,13 @@
+chainlit
+langchain
+langchain-community
+langchain-huggingface
+faiss-cpu
+langchain-pinecone
+langchain-google-genai
+python-dotenv
+pymongo
+asyncpg
+pyaudio
+python-multipart
+bcrypt
