@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 
 // Dynamically import components to avoid SSR issues
 const ChatInterface = dynamic(() => import('./../src/components/ChatInterface'), {
@@ -79,10 +80,12 @@ function MainPageContent({ user, isAuthenticated, logout, connectionStatus, mess
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <img 
+              <Image 
                 src="/fue-red-logo.jpg" 
                 alt="FUE Logo" 
-                className="h-10 w-auto mr-3"
+                width={40}
+                height={40}
+                className="mr-3"
               />
               <div>
                 <h1 className="text-xl font-bold text-gray-900">

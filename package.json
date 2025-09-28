@@ -6,10 +6,14 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "postbuild": "next-bundle-analyzer || true"
+    "lint": "eslint"
   },
   "dependencies": {
+    "next": "15.5.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "optionalDependencies": {
     "@google/generative-ai": "^0.24.1",
     "@langchain/community": "^0.3.56",
     "@langchain/core": "^0.3.77",
@@ -26,9 +30,6 @@
     "langchain": "^0.3.34",
     "mongodb": "^6.20.0",
     "multer": "^2.0.2",
-    "next": "15.5.3",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

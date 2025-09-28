@@ -130,10 +130,8 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
 
-  // Experimental optimizations
-  experimental: {
-    optimizePackageImports: ['@langchain/core', '@langchain/community', 'langchain']
-  }
+  // Remove experimental optimizations that conflict
+  experimental: {}
 };
 
 export default nextConfig;
