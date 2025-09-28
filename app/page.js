@@ -10,21 +10,38 @@ const ChatInterface = dynamic(() => import('./../src/components/ChatInterface'),
   ssr: false
 });
 
-const ClientWrapper = dynamic(() => import('./../src/components/ClientWrapper'), {
-  ssr: false
-});
-
 /**
  * Main chat page component
  * This is the entry point for the Arabic chatbot application
  */
 export default function HomePage() {
   const [isClient, setIsClient] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [connectionStatus, setConnectionStatus] = useState('disconnected');
+  const [messageStats, setMessageStats] = useState({ total: 0 });
+  
   const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
+    // Initialize with default values
+    setConnectionStatus('connected');
   }, []);
+
+  const handleLogout = async () => {
+    setIsAuthenticated(false);
+    setUser(null);
+    router.refresh();
+  };
+
+  const handleLogin = () => {
+    router.push('/auth/login');
+  };
+
+  const handleRegister = () => {
+    router.push('/auth/register');
+  };
 
   if (!isClient) {
     return (
@@ -37,41 +54,6 @@ export default function HomePage() {
       </div>
     );
   }
-
-  return (
-    <ClientWrapper>
-      {({ user, isAuthenticated, logout, connectionStatus, messageStats }) => (
-        <MainPageContent 
-          user={user}
-          isAuthenticated={isAuthenticated}
-          logout={logout}
-          connectionStatus={connectionStatus}
-          messageStats={messageStats}
-          router={router}
-        />
-      )}
-    </ClientWrapper>
-  );
-}
-
-/**
- * Main page content component
- */
-function MainPageContent({ user, isAuthenticated, logout, connectionStatus, messageStats, router }) {
-  const handleLogout = async () => {
-    const result = await logout();
-    if (result.success) {
-      router.refresh(); // Refresh to update UI state
-    }
-  };
-
-  const handleLogin = () => {
-    router.push('/auth/login');
-  };
-
-  const handleRegister = () => {
-    router.push('/auth/register');
-  };
 
   return (
     <main className="min-h-screen bg-blue-50 relative">
